@@ -11,14 +11,16 @@ const tablehead = Object.keys(tableData[1])
 export const DataTable = () => {
   const [search, setSearch] = useState("")
   const [entries, setEntries] = useState(5)
-  const searchData = search.length === 0 ? tableData : tableData.filter((elm) => elm?.name?.includes(search) || elm?.position?.includes(search) || elm?.office?.includes(search)
-    || elm?.age?.toString().includes(search) || elm?.salary?.toString().includes(search) || elm?.['start date']?.includes(search))
-  const totalPg = Math.ceil(searchData.length / entries);
+  const [orderAsc,setOrderAsc] = useState('')
+  const [orderDsc,setOrderDsc] = useState('')
+  const searchData = search.length === 0 ? tableData : tableData.filter((elm) => elm?.name?.includes(search.toLowerCase()) || elm?.position?.includes(search.toLowerCase()) || elm?.office?.includes(search.toLowerCase())
+    || elm?.age?.toString().includes(search.toLowerCase()) || elm?.salary?.toString().includes(search) || elm?.['start date']?.includes(search))
+    const [filterData, setFilterData] = useState(searchData)
+  const totalPg = Math.ceil(filterData.length / entries);
   const paginationPg = [];
   const [selectedPg, setSelectedPg] = useState(1)
   const firstIndex = (selectedPg - 1) * entries;
   const lastIndex = selectedPg * entries;
-  const [filterData, setFilterData] = useState(searchData)
 
   useEffect(() => {
     setSelectedPg(1)
@@ -58,11 +60,15 @@ export const DataTable = () => {
         return comparison;
       })
       setFilterData([...data])
+      setOrderAsc(elm)
+      setOrderDsc('')
     } else {
       const datasets = searchData.sort((a, b) => {
         return a[elm] - b[elm]
       })
       setFilterData([...datasets])
+      setOrderAsc(elm)
+      setOrderDsc('')
     }
   }
 
@@ -81,12 +87,16 @@ export const DataTable = () => {
         }
         return comparison;
       })
+      setOrderAsc('')
+      setOrderDsc(elm)
       setFilterData([...data])
     } else {
       const datasets = searchData.sort((a, b) => {
         return b[elm] - a[elm]
       })
       setFilterData([...datasets])
+      setOrderAsc('')
+      setOrderDsc(elm)
     }
   }
 
@@ -134,8 +144,8 @@ export const DataTable = () => {
                   <div className="flex items-center gap-x-2">
                     {elm}
                     <div className='flex flex-col '>
-                      <IoMdArrowDropup className='text-slate-400 cursor-pointer' onClick={() => handlAscending(elm)} />
-                      <IoMdArrowDropdown className='text-slate-400 cursor-pointer' onClick={() => handleDescending(elm)} />
+                      <IoMdArrowDropup className={`${orderAsc===elm ? "text-slate-800" : "text-slate-400" } cursor-pointer`} onClick={() => handlAscending(elm)} />
+                      <IoMdArrowDropdown className={`${orderDsc===elm ? "text-slate-800" : "text-slate-400" } cursor-pointer`} onClick={() => handleDescending(elm)} />
                     </div>
 
                   </div>
@@ -170,15 +180,15 @@ export const DataTable = () => {
 
 
         <div className='md:flex md:justify-between md:items-center'>
-          <p>Showing {firstIndex + 1} to {(searchData.length > lastIndex) ? lastIndex : lastIndex - (lastIndex - searchData.length)} of {searchData.length} entries</p>
+          <p>Showing {filterData.length===0 ? firstIndex : firstIndex + 1} to {(filterData.length > lastIndex) ? lastIndex : lastIndex - (lastIndex - filterData.length)} of {filterData.length} entries</p>
           {/* pagination      */}
-          <nav aria-label="Page navigation example" className='w-[80vw] overflow-x-auto'>
+          <nav aria-label="Page navigation example" className='w-[80vw] md:w-fit overflow-x-auto'>
             <ul className="flex ">
               <li onClick={handlePrevious} className="block px-3 py-2 ml-0 leading-tight text-blue-600 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
               <IoIosArrowBack/>
               </li>
 
-              {paginationPg.map(pg => <li key={pg} onClick={() => setSelectedPg(pg)} className={` cursor-pointer px-3 py-2 leading-tight text-blue-600 ${selectedPg === pg && "bg-slate-400"} bg-white border border-gray-300   dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}>{pg}</li>
+              {paginationPg.map(pg => <li key={pg} onClick={() => setSelectedPg(pg)} className={` cursor-pointer px-3 py-2 leading-tight text-blue-600 ${selectedPg === pg ? "bg-slate-400" : "bg-white"}  border border-gray-300   dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}>{pg}</li>
               )}
 
               <li onClick={handleNext} className="block px-3 py-2 leading-tight text-blue-600 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">

@@ -21,14 +21,14 @@ export const Header = () => {
                             <HiOutlineSearch className='text-white' />
                         </div>
                     </div>
-                    <div className='flex  items-center text-lg text-slate-400'>
+                    <div className='flex relative items-center text-lg text-slate-400'>
                         <BsFillPersonFill />
-                        <div className='relative'>
+                        <div className=''>
                         <BiCaretDown className='text-md' onClick={()=>setToogle(!toggle)}/>
-                        <div  className={`${toggle ? "visible" : "hidden"} z-10 bg-white absolute mt-2 rounded-md p-3 w-fit text-sm  -ml-[5rem] border border-slate-300`}>
-                            <li className='list-none'>Setting</li>
-                            <li className='list-none'>Activity Log</li>
-                            <li className='list-none border-t border-slate-400'>Logout</li>
+                        <div  className={`${toggle ? "visible" : "hidden"} flex flex-col gap-y-2 z-10 bg-white absolute mt-2 rounded-md w-fit text-md  -ml-[7rem] border border-slate-300`}>
+                            <li className='list-none px-3 hover:bg-slate-200 '>Setting</li>
+                            <li className='list-none px-3 hover:bg-slate-200 '>Activity Log</li>
+                            <li className='list-none border-t px-3 border-slate-400 hover:bg-slate-200 '>Logout</li>
                         </div>
 
                         </div>
